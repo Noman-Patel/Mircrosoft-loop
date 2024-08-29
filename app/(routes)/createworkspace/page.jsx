@@ -1,5 +1,6 @@
 "use client";
 import CoverPicker from "@/app/_components/CoverPicker";
+import EmojiPickerComponent from "@/app/_components/EmojiPickerComponent";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SmilePlus } from "lucide-react";
@@ -9,12 +10,13 @@ import React, { useState } from "react";
 function CreateWorkspace() {
   const [coverImage, setCoverImage] = useState("/background.png");
   const [workspaceName, setWorkspaceName] = useState();
+  const[emoji,setEmoji]= useState();
   return (
     <div className="p-10 md:px-36 lg:px-64 xl:px-96 py-30">
       <div className="shadow-2xl rounded-lg">
         {/*Cover Image */}
 
-        <CoverPicker>
+        <CoverPicker setNewCover={(v)=>setCoverImage(v)} >
           <div className="relative group cursor-pointer">
             <h2 className="hidden absolute p-4 w-full h-full items-center group-hover:flex justify-center">
               Change Cover
@@ -41,9 +43,12 @@ function CreateWorkspace() {
           </h2>
 
           <div className="mt-8 flex gap-2 items-center">
-            <Button variant="outline">
-              <SmilePlus size={20} className="mr-2" />
-            </Button>
+            <EmojiPickerComponent setEmojiIcon={(v) => setEmoji(v)}>
+              <Button variant="outline">
+                {emoji?emoji:<SmilePlus size={20} className="mr-2" />}
+              </Button>
+            </EmojiPickerComponent>
+
 
             <Input
               placeholder="Workspace Name"
