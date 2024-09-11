@@ -1,5 +1,6 @@
 import React from 'react'
 import SideNav from '../../_components/SideNav'
+import DocumentEditerSection from '../../_components/DocumentEditerSection'
 
 function WorkspaceDocument({params}){
   return (
@@ -12,7 +13,7 @@ function WorkspaceDocument({params}){
         </div>
         {/* Document */}
         <div className='md:ml-80'>
-            Document
+            <DocumentEditerSection params={params}/>
         </div>
     </div>
   )

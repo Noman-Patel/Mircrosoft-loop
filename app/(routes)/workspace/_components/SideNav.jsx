@@ -8,7 +8,13 @@ import React, { useEffect, useState } from "react";
 import DocumentList from "./DocumentList";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { Progress } from "@/components/ui/progress"
 import uuid4 from "uuid4";
+import { toast } from "sonner";
+
+
+const MAX_FILE=process.env.NEXT_PUBLIC_MAX_FILE_COUNT;
+
 
 function SideNav({ params }) {
 
@@ -38,6 +44,17 @@ const unsubscribe=onSnapshot(q,(querySnapshot)=>{
 
 {/*Creates a new Documenty */}
   const CreateNewDocument=async()=>{
+    if(documentList?.length>=MAX_FILE){
+      toast("Upgrade to add a new file",{
+          description: "You have reached max file limit. Please upgrad for unlimited file space",
+          action: {
+            label: "Upgrade",
+            onClick: () => console.log("Undo"),
+          },
+        })
+      return;
+  }
+
     setLoading(true);
     const docId = uuid4();
     await setDoc(doc(db, 'workspaceDocuments', docId.toString()), {
@@ -62,8 +79,7 @@ const unsubscribe=onSnapshot(q,(querySnapshot)=>{
 
 
   return (
-    <div className='h-screen md:w-72 
-    hidden md:block fixed bg-blue-50 p-5 shadow-md'>
+    <div className='h-screen md:w-80 hidden md:block fixed bg-blue-50 p-5 shadow-md'>
         <div className='flex justify-between items-center'>
             <Logo/>
             <Bell className='h-5 w-5 text-gray-500'/>
@@ -82,6 +98,14 @@ const unsubscribe=onSnapshot(q,(querySnapshot)=>{
         {/* Document List  */}
         <DocumentList documentList={documentList}
         params={params} />
+
+
+        {/* Progress Bar */}
+        <div className="absolute bottom-10 w-[90%]">
+        <Progress value={(documentList?.length/MAX_FILE )*100} />
+          <h2 className='text-sm  my-2'><strong>{documentList?.length}</strong> Out of <strong>5</strong> files used</h2>
+          <h2 className='text-sm  '>Upgrade your plan for unlimted access</h2>
+        </div>
 
     </div>
   );

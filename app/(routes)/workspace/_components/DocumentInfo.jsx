@@ -1,47 +1,38 @@
 "use client";
-
 import CoverPicker from "@/app/_components/CoverPicker";
 import EmojiPickerComponent from "@/app/_components/EmojiPickerComponent";
 import { db } from "@/config/firebaseConfig";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-
+import { doc, getDoc } from "firebase/firestore";
 import { SmilePlus } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 function DocumentInfo({ params }) {
   const [coverImage, setCoverImage] = useState("/cover.png");
   const [emoji, setEmoji] = useState();
   const [documentInfo, setDocumentInfo] = useState();
-
-  
-
   useEffect(() => {
     params && GetDocumentInfo();
   }, [params]);
 
   /**
    * Used to get document info
-   */
-  const GetDocumentInfo = async () => {
-    try {
-      const docRef = doc(db, "workspaceDocuments", params?.documentid);
-      const docSnap = await getDoc(docRef);
+*/
 
-      if (docSnap.exists()) {
-        console.log(docSnap.data());
-        setDocumentInfo(docSnap.data());
+const GetDocumentInfo=async()=>{
+    const docRef=doc(db,'workspaceDocuments',params?.documentid);
+    const docSnap=await getDoc(docRef);
+
+    if(docSnap.exists())
+    {
+        console.log(docSnap.data())
+        setDocumentInfo(docSnap.data())
         setEmoji(docSnap.data()?.emoji);
-        docSnap.data()?.coverImage && setCoverImage(docSnap.data()?.coverImage);
-      } else {
-        console.log("No document found");
-      }
-    } catch (error) {
-      console.error("Error fetching document info:", error);
+        docSnap.data()?.coverImage&&setCoverImage(docSnap.data()?.coverImage)
+    }else{
+        
     }
-  };
-
+}
 
 
   return (
@@ -63,6 +54,7 @@ function DocumentInfo({ params }) {
           <div className="group-hover:opacity-40">
             <Image
               src={coverImage}
+              alt=""
               width={400}
               height={400}
               className="w-full h-[200px] object-cover "
@@ -70,8 +62,9 @@ function DocumentInfo({ params }) {
           </div>
         </div>
       </CoverPicker>
+
       {/* Emoji Picker  */}
-      <div className="absolute ml-10 px-20 mt-[-40px] cursor-pointer">
+      <div className="absolute  px-20  cursor-pointer">
         <EmojiPickerComponent
           setEmojiIcon={(emoji) => {
             setEmoji(emoji);
@@ -86,14 +79,14 @@ function DocumentInfo({ params }) {
           </div>
         </EmojiPickerComponent>
       </div>
+
       {/* File Name  */}
       <div className="mt-10 px-20 ml-10 p-10">
         <input
           type="text"
           placeholder="Untitled Document"
-          value={documentName}
+          defaultValue={"Untitled Document"}
           className="font-bold text-4xl outline-none"
-
         />
       </div>
     </div>

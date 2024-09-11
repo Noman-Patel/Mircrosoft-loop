@@ -4,6 +4,7 @@ import React from 'react'
 import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '@/config/firebaseConfig';
 import { toast } from 'sonner';
+import DocumentOptions from './DocumentOptions';
 
 function DocumentList({documentList,params}) {
     const router=useRouter();
@@ -26,8 +27,8 @@ function DocumentList({documentList,params}) {
                   {!doc.emoji&&  <Image src={'/loopdocument.svg'} width={20} height={20}/>}
                     <h2 className='flex gap-2'> {doc?.emoji} {doc.documentName}</h2>
                 </div>
-{/*                <DocumentOptions doc={doc} deleteDocument={(docId)=>DeleteDocument(docId)} />
-*/}            </div>
+                <DocumentOptions doc={doc} deleteDocument={(docId)=>DeleteDocument(docId)} />
+            </div>
         ))}
     </div>
   )
