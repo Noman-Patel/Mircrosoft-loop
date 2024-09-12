@@ -2,10 +2,11 @@
 import CoverPicker from "@/app/_components/CoverPicker";
 import EmojiPickerComponent from "@/app/_components/EmojiPickerComponent";
 import { db } from "@/config/firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { SmilePlus } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 function DocumentInfo({ params }) {
   const [coverImage, setCoverImage] = useState("/cover.png");
@@ -32,6 +33,25 @@ const GetDocumentInfo=async()=>{
     }
 }
 
+const updateDocumentInfo = async (key, value) => {
+    if (value === undefined) {
+      console.error(`Cannot update ${key} with undefined value`);
+      return; // Exit the function if the value is undefined
+    }
+  
+    try {
+      const docRef = doc(db, 'workspaceDocuments', params?.documentid);
+      await updateDoc(docRef, {
+        [key]: value
+      });
+      toast('Document Updated!');
+    } catch (error) {
+      console.error('Error updating document:', error);
+      toast('Error updating document');
+    }
+  };
+
+
 
   return (
     <div>
@@ -39,6 +59,7 @@ const GetDocumentInfo=async()=>{
       <CoverPicker
         setNewCover={(cover) => {
           setCoverImage(cover);
+          updateDocumentInfo("coverImage", cover);
         }}
       >
         <div className="relative group cursor-pointer">
@@ -63,11 +84,11 @@ const GetDocumentInfo=async()=>{
 
       {/* Emoji Picker  */}
       <div className="absolute  px-20  cursor-pointer">
-        <EmojiPickerComponent
-          setEmojiIcon={(emoji) => {
-            setEmoji(emoji);
-          }}
-        >
+      <EmojiPickerComponent 
+            setEmojiIcon={(emoji)=>{
+                setEmoji(emoji);
+                updateDocumentInfo('emoji',emoji)
+                }}>
           <div className="bg-[#ffffffb0] p-4 rounded-md">
             {emoji ? (
               <span className="text-5xl">{emoji}</span>
@@ -83,8 +104,9 @@ const GetDocumentInfo=async()=>{
         <input
           type="text"
           placeholder="Untitled Document"
-          defaultValue={"Untitled Document"}
+          defaultValue={documentInfo?.documentName}
           className="font-bold text-4xl outline-none"
+          onBlur ={(event)=>updateDocumentInfo('documentName',event.target.value)}
         />
       </div>
     </div>
