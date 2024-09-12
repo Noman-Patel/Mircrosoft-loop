@@ -29,8 +29,6 @@ const GetDocumentInfo=async()=>{
         setDocumentInfo(docSnap.data())
         setEmoji(docSnap.data()?.emoji);
         docSnap.data()?.coverImage&&setCoverImage(docSnap.data()?.coverImage)
-    }else{
-        
     }
 }
 
