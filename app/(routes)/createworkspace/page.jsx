@@ -32,7 +32,7 @@ function CreateWorkspace() {
             workspaceName:workspaceName,
             emoji:emoji,
             coverImage:coverImage,
-            createdBy: user?.primaryEmailAddress?.emailAddress || null,
+            createdBy:user?.primaryEmailAddress?.emailAddress,
             id:workspaceId,
             orgId:orgId?orgId:user?.primaryEmailAddress?.emailAddress
         });
