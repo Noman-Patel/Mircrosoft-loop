@@ -9,66 +9,73 @@ import { doc, setDoc } from 'firebase/firestore';
 import { Loader2Icon, SmilePlus } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import uuid4 from 'uuid4';
 
 function CreateWorkspace() {
-  const [coverImage, setCoverImage] = useState('/cover.png');
-  const [workspaceName, setWorkspaceName] = useState('');
-  const [emoji, setEmoji] = useState(null);
-  const { user } = useUser();
-  const { orgId } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-
-  /**
-   * Used to create new workspace and save data in database
-   */
-  const OnCreateWorkspace = async () => {
-    if (!user || !workspaceName?.length) return;
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const [coverImage, setCoverImage] = useState('/cover.png');
+            const [workspaceName, setWorkspaceName] = useState('');
+            const [emoji, setEmoji] = useState(null);
+            const { user } = useUser();
+            const { orgId } = useAuth();
+            const [loading, setLoading] = useState(false);
+            const router = useRouter();
+          
+            /**
+             * Used to create new workspace and save data in database
+             */
+            const OnCreateWorkspace = async () => {
+              if (!user || !workspaceName?.length) return;
+              
+              setLoading(true);
+              try {
+                const workspaceId = Date.now();
+                // Create workspace document
+                await setDoc(doc(db, 'Workspace', workspaceId.toString()), {
+                  workspaceName: workspaceName,
+                  emoji: emoji || '',
+                  coverImage: coverImage,
+                  createdBy: user?.primaryEmailAddress?.emailAddress,
+                  id: workspaceId,
+                  orgId: orgId ? orgId : user?.primaryEmailAddress?.emailAddress
+                });
+          
+                // Generate a unique document ID for the first document
+                const docId = uuid4();
+                
+                // Create a default workspace document
+                await setDoc(doc(db, 'workspaceDocuments', docId.toString()), {
+                  workspaceId: workspaceId,
+                  createdBy: user?.primaryEmailAddress?.emailAddress,
+                  coverImage: null,
+                  emoji: null,
+                  id: docId,
+                  documentName: 'Untitled Document',
+                  documentOutput: []
+                });
+          
+                // Create an empty output entry for the document
+                await setDoc(doc(db, 'documentOutput', docId.toString()), {
+                  docId: docId,
+                  output: []
+                });
+          
+                // Redirect to the workspace and document
+                router.replace(`/workspace/${workspaceId}/${docId}`);
+              } catch (error) {
+                console.error('Error creating workspace:', error);
+                // Optionally, show an error toast or message to the user
+              } finally {
+                setLoading(false);
+              }
+            };
+          console.log('Window object is accessible:', window.location.href);
+        }
+      }, []);
     
-    setLoading(true);
-    try {
-      const workspaceId = Date.now();
-      // Create workspace document
-      await setDoc(doc(db, 'Workspace', workspaceId.toString()), {
-        workspaceName: workspaceName,
-        emoji: emoji || '',
-        coverImage: coverImage,
-        createdBy: user?.primaryEmailAddress?.emailAddress,
-        id: workspaceId,
-        orgId: orgId ? orgId : user?.primaryEmailAddress?.emailAddress
-      });
-
-      // Generate a unique document ID for the first document
-      const docId = uuid4();
-      
-      // Create a default workspace document
-      await setDoc(doc(db, 'workspaceDocuments', docId.toString()), {
-        workspaceId: workspaceId,
-        createdBy: user?.primaryEmailAddress?.emailAddress,
-        coverImage: null,
-        emoji: null,
-        id: docId,
-        documentName: 'Untitled Document',
-        documentOutput: []
-      });
-
-      // Create an empty output entry for the document
-      await setDoc(doc(db, 'documentOutput', docId.toString()), {
-        docId: docId,
-        output: []
-      });
-
-      // Redirect to the workspace and document
-      router.replace(`/workspace/${workspaceId}/${docId}`);
-    } catch (error) {
-      console.error('Error creating workspace:', error);
-      // Optionally, show an error toast or message to the user
-    } finally {
-      setLoading(false);
-    }
-  };
+  
 
   return (
     <div className='p-10 md:px-36 lg:px-64 xl:px-96 py-28'>
