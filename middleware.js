@@ -1,9 +1,9 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-//Restricts access to pages based on access
 const isProtectedRoute = createRouteMatcher([
-    '/dashboard(.*)',
-])
+  '/dashboard(.*)',
+  '/workspace(.*)',
+]);
 
 export default clerkMiddleware((auth,req) =>{
     if(isProtectedRoute(req)) auth().protect()
