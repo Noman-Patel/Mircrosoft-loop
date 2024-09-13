@@ -13,7 +13,7 @@ function DocumentEditerSection({params}) {
 
         {/* Rich Text Editor  */}
  
-        <RichDocumentEditor />
+        <RichDocumentEditor params={params}/>
  
      {/* <div className='fixed right-10 bottom-10 '>
         <Button onClick={() => setOpenComment(!openComment)}>
