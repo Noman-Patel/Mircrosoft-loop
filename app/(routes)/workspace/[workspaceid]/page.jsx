@@ -1,12 +1,15 @@
- import React from 'react'
+import React from 'react'
 import SideNav from '../_components/SideNav'
- 
- function Workspace({params}) {
-   return (
-     <div>
+import { Room } from '@/app/Room'
+
+function Workspace({params}) {
+  return (
+    <div>
+      <Room params={params}>
         <SideNav params={params} />
-     </div>
-   )
- }
- 
- export default Workspace
+        </Room>
+    </div>
+  )
+}
+
+export default Workspace

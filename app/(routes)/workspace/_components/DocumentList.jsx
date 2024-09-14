@@ -1,10 +1,10 @@
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React from 'react'
+import DocumentOptions from './DocumentOptions';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '@/config/firebaseConfig';
 import { toast } from 'sonner';
-import DocumentOptions from './DocumentOptions';
 
 function DocumentList({documentList,params}) {
     const router=useRouter();
