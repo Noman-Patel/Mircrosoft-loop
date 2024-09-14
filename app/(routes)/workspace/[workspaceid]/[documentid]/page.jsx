@@ -1,8 +1,8 @@
 "use client"
 import React, { useEffect } from 'react'
 import SideNav from '../../_components/SideNav'
-import DocumentEditorSection from '../../_components/DocumentEditorSection'
 import { Room } from '@/app/Room'
+import DocumentEditorSection from '../../_components/DocumentEditerSection'
 
 function WorkspaceDocument({params}) {
 

@@ -7,7 +7,7 @@ import List from "@editorjs/list";
 import NestedList from '@editorjs/nested-list';
 import Checklist from '@editorjs/checklist'
 import Embed from '@editorjs/embed';
-import SimpleImage from 'simple-image-editorjs';
+import SimpleImage from "@editorjs/simple-image";
 import Table from '@editorjs/table'
 import CodeTool from '@editorjs/code';
 import { TextVariantTune } from '@editorjs/text-variant-tune';
